@@ -12,7 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.3.0"
+    "astro": "^7.3.0",
+    "firebase": "^12.18.0",
+    "pdfjs-dist": "^6.3.289",
+    "tesseract.js": "^7.0.0"
   },
   "allowScripts": {
     "esbuild": true

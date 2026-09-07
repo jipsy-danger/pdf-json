@@ -1,0 +1,898 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>PDF → JSON</title>
+  </head>
+
+  <body>
+    <main>
+      <h1>PDF → JSON</h1>
+      <p class="subtitle">Question Bank Converter</p>
+
+      <section
+        id="dropZone"
+        class="drop-zone"
+      >
+        <p>Drop a PDF here</p>
+        <p class="or">or</p>
+
+        <label class="choose-button">
+          Choose PDF
+          <input
+            id="pdfInput"
+            type="file"
+            accept=".pdf,application/pdf"
+            hidden
+          />
+        </label>
+
+        <p class="hint">
+          You can also paste a PDF with Ctrl + V
+        </p>
+      </section>
+
+      <section id="fileSection" hidden>
+        <p>
+          Selected:
+          <strong id="fileName"></strong>
+        </p>
+
+        <button id="convertButton">
+          Convert to JSON
+        </button>
+      </section>
+
+      <section id="progressSection" hidden>
+        <p id="status">Preparing...</p>
+
+        <div class="progress">
+          <div id="progressBar"></div>
+        </div>
+      </section>
+
+      <section id="resultSection" hidden>
+        <h2>Conversion complete</h2>
+
+        <p id="resultInfo"></p>
+
+        <button id="downloadButton">
+          Download JSON
+        </button>
+
+        <p id="saveStatus"></p>
+      </section>
+    </main>
+
+
+    <script>
+      import * as pdfjsLib from "pdfjs-dist";
+      import { createWorker } from "tesseract.js";
+      import { db } from "../lib/firebase.js";
+
+      import {
+        doc,
+        setDoc
+      } from "firebase/firestore";
+
+
+      // PDF.js worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "/pdf.worker.min.mjs";
+
+
+      const pdfInput =
+        document.getElementById("pdfInput");
+
+      const dropZone =
+        document.getElementById("dropZone");
+
+      const fileSection =
+        document.getElementById("fileSection");
+
+      const fileName =
+        document.getElementById("fileName");
+
+      const convertButton =
+        document.getElementById("convertButton");
+
+      const progressSection =
+        document.getElementById("progressSection");
+
+      const status =
+        document.getElementById("status");
+
+      const progressBar =
+        document.getElementById("progressBar");
+
+      const resultSection =
+        document.getElementById("resultSection");
+
+      const resultInfo =
+        document.getElementById("resultInfo");
+
+      const downloadButton =
+        document.getElementById("downloadButton");
+
+      const saveButton = null;
+
+      const saveStatus =
+        document.getElementById("saveStatus");
+
+
+      let selectedPDF = null;
+      let generatedJSON = null;
+      let generatedJSONName = null;
+
+
+      // --------------------------------
+      // PDF selection
+      // --------------------------------
+
+      pdfInput.addEventListener(
+        "change",
+        () => {
+
+          if (!pdfInput.files.length) {
+            return;
+          }
+
+          selectPDF(pdfInput.files[0]);
+        }
+      );
+
+
+      function selectPDF(file) {
+
+        if (
+          file.type !== "application/pdf" &&
+          !file.name.toLowerCase().endsWith(".pdf")
+        ) {
+          alert("Please select a PDF file.");
+          return;
+        }
+
+        selectedPDF = file;
+
+        fileName.textContent =
+          file.name;
+
+        fileSection.hidden = false;
+
+        resultSection.hidden = true;
+      }
+
+
+      // --------------------------------
+      // Drag & drop
+      // --------------------------------
+
+      dropZone.addEventListener(
+        "dragover",
+        (event) => {
+          event.preventDefault();
+
+          dropZone.classList.add("dragging");
+        }
+      );
+
+
+      dropZone.addEventListener(
+        "dragleave",
+        () => {
+          dropZone.classList.remove("dragging");
+        }
+      );
+
+
+      dropZone.addEventListener(
+        "drop",
+        (event) => {
+
+          event.preventDefault();
+
+          dropZone.classList.remove("dragging");
+
+          const file =
+            event.dataTransfer.files[0];
+
+          if (file) {
+            selectPDF(file);
+          }
+        }
+      );
+
+
+      // --------------------------------
+      // Paste PDF
+      // --------------------------------
+
+      document.addEventListener(
+        "paste",
+        (event) => {
+
+          const items =
+            event.clipboardData?.items;
+
+          if (!items) return;
+
+          for (const item of items) {
+
+            if (
+              item.kind === "file" &&
+              item.type === "application/pdf"
+            ) {
+
+              const file =
+                item.getAsFile();
+
+              if (file) {
+                selectPDF(file);
+              }
+            }
+          }
+        }
+      );
+
+
+      // --------------------------------
+      // Convert
+      // --------------------------------
+
+      convertButton.addEventListener(
+        "click",
+        async () => {
+
+          if (!selectedPDF) {
+            return;
+          }
+
+          convertButton.disabled = true;
+
+          progressSection.hidden = false;
+
+          resultSection.hidden = true;
+
+          progressBar.style.width = "0%";
+
+          try {
+
+            const arrayBuffer =
+              await selectedPDF.arrayBuffer();
+
+
+            status.textContent =
+              "Reading PDF...";
+
+            progressBar.style.width =
+              "5%";
+
+
+            const pdf =
+              await pdfjsLib.getDocument({
+                data: arrayBuffer
+              }).promise;
+
+
+            const worker =
+              await createWorker(
+                "eng"
+              );
+
+
+            const questions = {};
+
+
+            for (
+              let pageNumber = 1;
+              pageNumber <= pdf.numPages;
+              pageNumber++
+            ) {
+
+              status.textContent =
+                `OCR page ${pageNumber} of ${pdf.numPages}...`;
+
+
+              const page =
+                await pdf.getPage(
+                  pageNumber
+                );
+
+
+              const viewport =
+                page.getViewport({
+                  scale: 2
+                });
+
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+
+              canvas.width =
+                viewport.width;
+
+              canvas.height =
+                viewport.height;
+
+
+              const context =
+                canvas.getContext(
+                  "2d"
+                );
+
+
+              await page.render({
+                canvasContext: context,
+                viewport
+              }).promise;
+
+
+              // --------------------------------
+              // OCR
+              // --------------------------------
+
+              const result =
+                await worker.recognize(
+                  canvas
+                );
+
+
+              const text =
+                result.data.text;
+
+
+              parseText(
+                text,
+                questions
+              );
+
+
+              const progress =
+                5 +
+                (
+                  pageNumber /
+                  pdf.numPages
+                ) *
+                90;
+
+
+              progressBar.style.width =
+                `${progress}%`;
+            }
+
+
+            await worker.terminate();
+
+
+            const orderedQuestions =
+              Object.values(
+                questions
+              ).sort(
+                (a, b) =>
+                  a.question_number -
+                  b.question_number
+              );
+
+
+            generatedJSON =
+              orderedQuestions;
+
+
+            generatedJSONName =
+              selectedPDF.name
+                .replace(
+                  /\.pdf$/i,
+                  ".json"
+                );
+
+
+            progressBar.style.width =
+              "100%";
+
+
+            status.textContent =
+              "Conversion complete.";
+
+
+            resultInfo.textContent =
+              `${orderedQuestions.length} questions found.`;
+
+
+            resultSection.hidden =
+              false;
+
+
+          } catch (error) {
+
+            console.error(error);
+
+            status.textContent =
+              "Conversion failed: " +
+              error.message;
+
+          } finally {
+
+            convertButton.disabled =
+              false;
+          }
+        }
+      );
+
+
+      // --------------------------------
+      // Question parser
+      // --------------------------------
+
+      function parseText(
+        rawText,
+        questions
+      ) {
+
+        const lines =
+          rawText.split(/\r?\n/);
+
+
+        let currentQuestion =
+          null;
+
+        let currentField =
+          null;
+
+
+        for (
+          let line of lines
+        ) {
+
+          line =
+            line.trim();
+
+
+          if (!line) {
+            continue;
+          }
+
+
+          // Question:
+          // 1. Question text
+
+          const questionMatch =
+            line.match(
+              /^(\d{1,3})\.\s+(.+)/
+            );
+
+
+          // Option:
+          // 1. text
+          // (1) text
+          // 1) text
+
+          const optionMatch =
+            line.match(
+              /^\(?([1-4])\)?[.)]\s*(.+)/
+            );
+
+
+          if (
+            questionMatch &&
+            Number(
+              questionMatch[1]
+            ) <= 180
+          ) {
+
+            const number =
+              Number(
+                questionMatch[1]
+              );
+
+
+            currentQuestion =
+              number;
+
+
+            questions[number] = {
+
+              question_number:
+                number,
+
+              question_text:
+                questionMatch[2].trim(),
+
+              options: {},
+
+              has_figure:
+                false
+
+            };
+
+
+            currentField =
+              "stem";
+
+
+            continue;
+          }
+
+
+          if (
+            optionMatch &&
+            currentQuestion !== null
+          ) {
+
+            const optionNumber =
+              optionMatch[1];
+
+
+            questions[
+              currentQuestion
+            ].options[
+              optionNumber
+            ] =
+              optionMatch[2].trim();
+
+
+            currentField =
+              optionNumber;
+
+
+            continue;
+          }
+
+
+          // Continuation line
+
+          if (
+            currentQuestion !== null &&
+            currentField !== null
+          ) {
+
+            const question =
+              questions[
+                currentQuestion
+              ];
+
+
+            if (
+              currentField ===
+              "stem"
+            ) {
+
+              question.question_text +=
+                " " + line;
+
+            } else {
+
+              question.options[
+                currentField
+              ] +=
+                " " + line;
+            }
+          }
+        }
+      }
+
+
+      // --------------------------------
+      // Download JSON
+      // --------------------------------
+
+      downloadButton.addEventListener(
+        "click",
+        () => {
+
+          if (!generatedJSON) {
+            return;
+          }
+
+
+          const blob =
+            new Blob(
+              [
+                JSON.stringify(
+                  generatedJSON,
+                  null,
+                  2
+                )
+              ],
+              {
+                type:
+                  "application/json"
+              }
+            );
+
+
+          const url =
+            URL.createObjectURL(
+              blob
+            );
+
+
+          const link =
+            document.createElement(
+              "a"
+            );
+
+
+          link.href =
+            url;
+
+          link.download =
+            generatedJSONName;
+
+
+          link.click();
+
+
+          URL.revokeObjectURL(
+            url
+          );
+        }
+      );
+
+
+      // --------------------------------
+      // Firebase
+      // --------------------------------
+
+      saveButton.addEventListener(
+        "click",
+        async () => {
+
+          if (
+            !generatedJSON ||
+            !generatedJSONName
+          ) {
+            return;
+          }
+
+
+          saveButton.disabled =
+            true;
+
+          saveStatus.textContent =
+            "Saving...";
+
+
+          try {
+
+            await setDoc(
+              doc(
+                db,
+                "questionBanks",
+                generatedJSONName
+              ),
+              {
+                fileName:
+                  generatedJSONName,
+
+                content:
+                  generatedJSON,
+
+                updatedAt:
+                  new Date().toISOString()
+              }
+            );
+
+
+            saveStatus.textContent =
+              "Saved to Firebase.";
+
+          } catch (error) {
+
+            console.error(error);
+
+            saveStatus.textContent =
+              "Firebase error: " +
+              error.message;
+
+          } finally {
+
+            saveButton.disabled =
+              false;
+          }
+        }
+      );
+
+    </script>
+  </body>
+</html>
+
+
+<style>
+
+  * {
+    box-sizing: border-box;
+  }
+
+
+  body {
+    margin: 0;
+
+    font-family:
+      Arial,
+      Helvetica,
+      sans-serif;
+
+    background: #f5f5f5;
+
+    color: #222;
+  }
+
+
+  main {
+    width:
+      min(850px, 92%);
+
+    margin:
+      60px auto;
+
+    padding:
+      30px;
+
+    background:
+      white;
+
+    border-radius:
+      12px;
+  }
+
+
+  h1 {
+    margin-bottom:
+      5px;
+  }
+
+
+  .subtitle {
+    color:
+      #666;
+  }
+
+
+  .drop-zone {
+    margin-top:
+      30px;
+
+    padding:
+      50px 20px;
+
+    text-align:
+      center;
+
+    border:
+      2px dashed #bbb;
+
+    border-radius:
+      12px;
+  }
+
+
+  .drop-zone.dragging {
+    border-color:
+      #333;
+
+    background:
+      #fafafa;
+  }
+
+
+  .or {
+    color:
+      #888;
+  }
+
+
+  .choose-button {
+    display:
+      inline-block;
+
+    padding:
+      10px 18px;
+
+    border:
+      1px solid #ccc;
+
+    border-radius:
+      6px;
+
+    cursor:
+      pointer;
+
+    background:
+      white;
+  }
+
+
+  .choose-button:hover {
+    background:
+      #eee;
+  }
+
+
+  .hint {
+    margin-top:
+      20px;
+
+    font-size:
+      14px;
+
+    color:
+      #777;
+  }
+
+
+  button {
+    padding:
+      10px 16px;
+
+    border:
+      1px solid #ccc;
+
+    border-radius:
+      6px;
+
+    background:
+      white;
+
+    cursor:
+      pointer;
+  }
+
+
+  button:hover {
+    background:
+      #eee;
+  }
+
+
+  button:disabled {
+    opacity:
+      0.5;
+
+    cursor:
+      not-allowed;
+  }
+
+
+  .progress {
+    width:
+      100%;
+
+    height:
+      10px;
+
+    margin-top:
+      10px;
+
+    background:
+      #eee;
+
+    border-radius:
+      10px;
+
+    overflow:
+      hidden;
+  }
+
+
+  #progressBar {
+    width:
+      0%;
+
+    height:
+      100%;
+
+    background:
+      #333;
+
+    transition:
+      width 0.2s;
+  }
+
+</style>

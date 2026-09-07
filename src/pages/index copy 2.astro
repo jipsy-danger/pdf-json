@@ -1,0 +1,1849 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <title>PDF → JSON</title>
+
+    <meta
+      name="description"
+      content="Universal browser-based PDF to JSON extractor."
+    />
+  </head>
+
+  <body>
+
+    <main class="app">
+
+      <header class="header">
+
+        <div class="brand">
+          PDF → JSON
+        </div>
+
+        <div class="badge">
+          Universal Extractor
+        </div>
+
+      </header>
+
+
+      <section class="hero">
+
+        <h1>
+          Extract your PDF
+          <br />
+          into structured JSON.
+        </h1>
+
+        <p>
+          Extract text, layout information,
+          images, annotations and OCR content
+          directly in your browser.
+        </p>
+
+      </section>
+
+
+      <section
+        id="dropZone"
+        class="drop-zone"
+      >
+
+        <div class="drop-icon">
+          ↑
+        </div>
+
+        <h2>
+          Drop your PDF here
+        </h2>
+
+        <p>
+          or choose a file from your device
+        </p>
+
+
+        <label class="choose-button">
+
+          Choose PDF
+
+          <input
+            id="pdfInput"
+            type="file"
+            accept=".pdf,application/pdf"
+            hidden
+          />
+
+        </label>
+
+
+        <p class="paste-hint">
+          You can also paste a PDF with
+          <kbd>Ctrl</kbd> +
+          <kbd>V</kbd>
+        </p>
+
+      </section>
+
+
+      <section
+        id="selectedSection"
+        class="selected-card"
+        hidden
+      >
+
+        <div>
+
+          <div class="file-label">
+            Selected PDF
+          </div>
+
+          <div
+            id="fileName"
+            class="file-name"
+          ></div>
+
+          <div
+            id="fileSize"
+            class="file-size"
+          ></div>
+
+        </div>
+
+
+        <button
+          id="extractButton"
+          class="primary-button"
+        >
+          Extract JSON
+        </button>
+
+      </section>
+
+
+      <section
+        id="progressSection"
+        class="progress-card"
+        hidden
+      >
+
+        <div class="progress-header">
+
+          <span id="status">
+            Preparing...
+          </span>
+
+          <span id="progressPercent">
+            0%
+          </span>
+
+        </div>
+
+
+        <div class="progress-track">
+
+          <div
+            id="progressBar"
+            class="progress-bar"
+          ></div>
+
+        </div>
+
+
+        <div
+          id="pageStatus"
+          class="page-status"
+        ></div>
+
+      </section>
+
+
+      <section
+        id="resultSection"
+        class="result-card"
+        hidden
+      >
+
+        <div class="success-icon">
+          ✓
+        </div>
+
+
+        <h2>
+          Extraction complete
+        </h2>
+
+
+        <p
+          id="resultMessage"
+          class="result-message"
+        ></p>
+
+
+        <div
+          id="statistics"
+          class="statistics"
+        ></div>
+
+
+        <button
+          id="downloadButton"
+          class="primary-button download-button"
+        >
+          Download JSON
+        </button>
+
+
+        <p
+          id="firebaseStatus"
+          class="firebase-status"
+        ></p>
+
+      </section>
+
+
+      <section
+        id="errorSection"
+        class="error-card"
+        hidden
+      >
+
+        <strong>
+          Extraction failed
+        </strong>
+
+        <p id="errorMessage"></p>
+
+      </section>
+
+
+      <footer>
+
+        <span>
+          PDF processing happens in your browser.
+        </span>
+
+        <span>
+          No PDF upload required.
+        </span>
+
+      </footer>
+
+    </main>
+
+
+    <script>
+
+      import {
+        extractPDF
+      } from "../lib/pdf-extractor.js";
+
+
+      import {
+        db
+      } from "../lib/firebase.js";
+
+
+      import {
+        doc,
+        setDoc
+      } from "firebase/firestore";
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Elements
+      |--------------------------------------------------------------------------
+      */
+
+      const pdfInput =
+        document.getElementById(
+          "pdfInput"
+        );
+
+
+      const dropZone =
+        document.getElementById(
+          "dropZone"
+        );
+
+
+      const selectedSection =
+        document.getElementById(
+          "selectedSection"
+        );
+
+
+      const fileName =
+        document.getElementById(
+          "fileName"
+        );
+
+
+      const fileSize =
+        document.getElementById(
+          "fileSize"
+        );
+
+
+      const extractButton =
+        document.getElementById(
+          "extractButton"
+        );
+
+
+      const progressSection =
+        document.getElementById(
+          "progressSection"
+        );
+
+
+      const status =
+        document.getElementById(
+          "status"
+        );
+
+
+      const progressPercent =
+        document.getElementById(
+          "progressPercent"
+        );
+
+
+      const progressBar =
+        document.getElementById(
+          "progressBar"
+        );
+
+
+      const pageStatus =
+        document.getElementById(
+          "pageStatus"
+        );
+
+
+      const resultSection =
+        document.getElementById(
+          "resultSection"
+        );
+
+
+      const resultMessage =
+        document.getElementById(
+          "resultMessage"
+        );
+
+
+      const statistics =
+        document.getElementById(
+          "statistics"
+        );
+
+
+      const downloadButton =
+        document.getElementById(
+          "downloadButton"
+        );
+
+
+      const firebaseStatus =
+        document.getElementById(
+          "firebaseStatus"
+        );
+
+
+      const errorSection =
+        document.getElementById(
+          "errorSection"
+        );
+
+
+      const errorMessage =
+        document.getElementById(
+          "errorMessage"
+        );
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | State
+      |--------------------------------------------------------------------------
+      */
+
+      let selectedPDF = null;
+
+      let generatedJSON = null;
+
+      let generatedJSONName = null;
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Helpers
+      |--------------------------------------------------------------------------
+      */
+
+      function formatBytes(
+        bytes
+      ) {
+
+        if (
+          !bytes ||
+          bytes === 0
+        ) {
+          return "0 Bytes";
+        }
+
+
+        const units = [
+          "Bytes",
+          "KB",
+          "MB",
+          "GB"
+        ];
+
+
+        const index =
+          Math.floor(
+            Math.log(bytes) /
+            Math.log(1024)
+          );
+
+
+        return (
+          parseFloat(
+            (
+              bytes /
+              Math.pow(
+                1024,
+                index
+              )
+            ).toFixed(2)
+          ) +
+          " " +
+          units[index]
+        );
+      }
+
+
+      function setProgress(
+        percent
+      ) {
+
+        const safe =
+          Math.max(
+            0,
+            Math.min(
+              100,
+              percent
+            )
+          );
+
+
+        progressBar.style.width =
+          `${safe}%`;
+
+
+        progressPercent.textContent =
+          `${Math.round(safe)}%`;
+      }
+
+
+      function resetResult() {
+
+        resultSection.hidden =
+          true;
+
+        errorSection.hidden =
+          true;
+
+        firebaseStatus.textContent =
+          "";
+      }
+
+
+      function selectPDF(
+        file
+      ) {
+
+        if (!file) {
+          return;
+        }
+
+
+        const isPDF =
+          file.type ===
+            "application/pdf" ||
+          file.name
+            .toLowerCase()
+            .endsWith(".pdf");
+
+
+        if (!isPDF) {
+
+          showError(
+            "Only PDF files are supported."
+          );
+
+          return;
+        }
+
+
+        selectedPDF =
+          file;
+
+
+        fileName.textContent =
+          file.name;
+
+
+        fileSize.textContent =
+          formatBytes(
+            file.size
+          );
+
+
+        selectedSection.hidden =
+          false;
+
+
+        resetResult();
+
+
+        progressSection.hidden =
+          true;
+
+
+        dropZone.classList.remove(
+          "dragging"
+        );
+      }
+
+
+      function showError(
+        message
+      ) {
+
+        errorSection.hidden =
+          false;
+
+        errorMessage.textContent =
+          message;
+      }
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | File picker
+      |--------------------------------------------------------------------------
+      */
+
+      pdfInput.addEventListener(
+        "change",
+        () => {
+
+          if (
+            pdfInput.files &&
+            pdfInput.files.length
+          ) {
+
+            selectPDF(
+              pdfInput.files[0]
+            );
+          }
+        }
+      );
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Drag and drop
+      |--------------------------------------------------------------------------
+      */
+
+      dropZone.addEventListener(
+        "dragover",
+        event => {
+
+          event.preventDefault();
+
+          dropZone.classList.add(
+            "dragging"
+          );
+        }
+      );
+
+
+      dropZone.addEventListener(
+        "dragleave",
+        event => {
+
+          if (
+            !dropZone.contains(
+              event.relatedTarget
+            )
+          ) {
+
+            dropZone.classList.remove(
+              "dragging"
+            );
+          }
+        }
+      );
+
+
+      dropZone.addEventListener(
+        "drop",
+        event => {
+
+          event.preventDefault();
+
+          dropZone.classList.remove(
+            "dragging"
+          );
+
+
+          const files =
+            event.dataTransfer?.files;
+
+
+          if (
+            files &&
+            files.length
+          ) {
+
+            selectPDF(
+              files[0]
+            );
+          }
+        }
+      );
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Paste PDF
+      |--------------------------------------------------------------------------
+      */
+
+      window.addEventListener(
+        "paste",
+        event => {
+
+          const items =
+            event.clipboardData?.items;
+
+
+          if (!items) {
+            return;
+          }
+
+
+          for (
+            const item of items
+          ) {
+
+            if (
+              item.kind !==
+              "file"
+            ) {
+              continue;
+            }
+
+
+            const file =
+              item.getAsFile();
+
+
+            if (!file) {
+              continue;
+            }
+
+
+            if (
+              file.type ===
+                "application/pdf" ||
+              file.name
+                .toLowerCase()
+                .endsWith(".pdf")
+            ) {
+
+              event.preventDefault();
+
+              selectPDF(
+                file
+              );
+
+              return;
+            }
+          }
+        }
+      );
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Extract PDF
+      |--------------------------------------------------------------------------
+      */
+
+      extractButton.addEventListener(
+        "click",
+        async () => {
+
+          if (!selectedPDF) {
+            return;
+          }
+
+
+          extractButton.disabled =
+            true;
+
+
+          downloadButton.disabled =
+            true;
+
+
+          selectedSection.classList.add(
+            "processing"
+          );
+
+
+          progressSection.hidden =
+            false;
+
+
+          resultSection.hidden =
+            true;
+
+
+          errorSection.hidden =
+            true;
+
+
+          setProgress(0);
+
+
+          status.textContent =
+            "Opening PDF...";
+
+
+          pageStatus.textContent =
+            "";
+
+
+          try {
+
+            const result =
+              await extractPDF(
+                selectedPDF,
+                {
+
+                  language:
+                    "eng",
+
+                  renderScale:
+                    2,
+
+
+                  onProgress:
+                    progress => {
+
+                      const percent =
+                        (
+                          progress.page /
+                          progress.totalPages
+                        ) *
+                        100;
+
+
+                      setProgress(
+                        percent
+                      );
+
+
+                      status.textContent =
+                        `Extracting page ${progress.page} of ${progress.totalPages}`;
+
+
+                      pageStatus.textContent =
+                        progress.pageData
+                          ? `${progress.pageData.extraction_method} extraction`
+                          : "";
+                    },
+
+
+                  onOCRProgress:
+                    logger => {
+
+                      if (
+                        logger &&
+                        typeof logger.progress ===
+                          "number"
+                      ) {
+
+                        const ocrPercent =
+                          Math.round(
+                            logger.progress *
+                            100
+                          );
+
+
+                        status.textContent =
+                          `OCR: ${ocrPercent}%`;
+                      }
+                    }
+                }
+              );
+
+
+            generatedJSON =
+              result;
+
+
+            generatedJSONName =
+              selectedPDF.name
+                .replace(
+                  /\.pdf$/i,
+                  ".json"
+                );
+
+
+            setProgress(100);
+
+
+            status.textContent =
+              "Extraction complete";
+
+
+            const pageCount =
+              result.pages.length;
+
+
+            const ocrPages =
+              result.extraction.ocr_pages;
+
+
+            const images =
+              result.extraction.image_count;
+
+
+            const annotations =
+              result.extraction.annotation_count;
+
+
+            const characters =
+              result.extraction
+                .native_character_count +
+              result.extraction
+                .ocr_character_count;
+
+
+            resultMessage.textContent =
+              `${pageCount} pages processed successfully.`;
+
+
+            statistics.innerHTML = `
+
+              <div class="stat">
+                <strong>${pageCount}</strong>
+                <span>Pages</span>
+              </div>
+
+              <div class="stat">
+                <strong>${characters.toLocaleString()}</strong>
+                <span>Characters</span>
+              </div>
+
+              <div class="stat">
+                <strong>${ocrPages}</strong>
+                <span>OCR Pages</span>
+              </div>
+
+              <div class="stat">
+                <strong>${images}</strong>
+                <span>Images</span>
+              </div>
+
+              <div class="stat">
+                <strong>${annotations}</strong>
+                <span>Annotations</span>
+              </div>
+
+            `;
+
+
+            resultSection.hidden =
+              false;
+
+
+            downloadButton.disabled =
+              false;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Automatic Firebase save
+            |--------------------------------------------------------------------------
+            */
+
+            firebaseStatus.textContent =
+              "Saving JSON...";
+
+
+            try {
+
+              await setDoc(
+                doc(
+                  db,
+                  "questionBanks",
+                  generatedJSONName
+                ),
+                {
+
+                  fileName:
+                    generatedJSONName,
+
+                  sourcePdf:
+                    selectedPDF.name,
+
+                  content:
+                    generatedJSON,
+
+                  updatedAt:
+                    new Date()
+                      .toISOString()
+                }
+              );
+
+
+              firebaseStatus.textContent =
+                "Saved.";
+
+            } catch (
+              firebaseError
+            ) {
+
+              console.error(
+                "Firebase save failed:",
+                firebaseError
+              );
+
+
+              firebaseStatus.textContent =
+                "JSON ready for download.";
+            }
+
+
+          } catch (
+            error
+          ) {
+
+            console.error(
+              error
+            );
+
+
+            showError(
+              error instanceof Error
+                ? error.message
+                : String(error)
+            );
+
+
+            status.textContent =
+              "Extraction failed.";
+
+          } finally {
+
+            extractButton.disabled =
+              false;
+
+            selectedSection.classList.remove(
+              "processing"
+            );
+          }
+        }
+      );
+
+
+      /*
+      |--------------------------------------------------------------------------
+      | Download JSON
+      |--------------------------------------------------------------------------
+      */
+
+      downloadButton.addEventListener(
+        "click",
+        () => {
+
+          if (!generatedJSON) {
+            return;
+          }
+
+
+          const json =
+            JSON.stringify(
+              generatedJSON,
+              null,
+              2
+            );
+
+
+          const blob =
+            new Blob(
+              [json],
+              {
+                type:
+                  "application/json"
+              }
+            );
+
+
+          const url =
+            URL.createObjectURL(
+              blob
+            );
+
+
+          const anchor =
+            document.createElement(
+              "a"
+            );
+
+
+          anchor.href =
+            url;
+
+
+          anchor.download =
+            generatedJSONName ||
+            "document.json";
+
+
+          document.body.appendChild(
+            anchor
+          );
+
+
+          anchor.click();
+
+
+          anchor.remove();
+
+
+          setTimeout(
+            () =>
+              URL.revokeObjectURL(
+                url
+              ),
+            1000
+          );
+        }
+      );
+
+    </script>
+
+  </body>
+</html>
+
+
+<style>
+
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+
+  :global(html) {
+    background: #f5f6f8;
+  }
+
+
+  :global(body) {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family:
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+
+    color: #111827;
+
+    background:
+      radial-gradient(
+        circle at top,
+        #ffffff 0,
+        #f5f6f8 50%,
+        #eef0f3 100%
+      );
+  }
+
+
+  .app {
+
+    width:
+      min(900px, 92%);
+
+    margin:
+      0 auto;
+
+    padding:
+      48px 0 32px;
+  }
+
+
+  .header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 80px;
+  }
+
+
+  .brand {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    letter-spacing:
+      -0.03em;
+  }
+
+
+  .badge {
+
+    padding:
+      7px 12px;
+
+    border:
+      1px solid #e5e7eb;
+
+    border-radius:
+      999px;
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+    background:
+      rgba(255,255,255,0.7);
+  }
+
+
+  .hero {
+
+    max-width:
+      700px;
+
+    margin:
+      0 auto 42px;
+
+    text-align:
+      center;
+  }
+
+
+  .hero h1 {
+
+    margin:
+      0;
+
+    font-size:
+      clamp(42px, 7vw, 72px);
+
+    line-height:
+      0.98;
+
+    letter-spacing:
+      -0.065em;
+
+    font-weight:
+      750;
+  }
+
+
+  .hero p {
+
+    max-width:
+      580px;
+
+    margin:
+      25px auto 0;
+
+    font-size:
+      17px;
+
+    line-height:
+      1.6;
+
+    color:
+      #6b7280;
+  }
+
+
+  .drop-zone {
+
+    padding:
+      70px 30px;
+
+    text-align:
+      center;
+
+    border:
+      1.5px dashed #c8ccd2;
+
+    border-radius:
+      22px;
+
+    background:
+      rgba(255,255,255,0.78);
+
+    transition:
+      border-color 0.2s,
+      background 0.2s,
+      transform 0.2s;
+  }
+
+
+  .drop-zone:hover,
+  .drop-zone.dragging {
+
+    border-color:
+      #111827;
+
+    background:
+      #ffffff;
+
+    transform:
+      translateY(-2px);
+  }
+
+
+  .drop-icon {
+
+    width:
+      48px;
+
+    height:
+      48px;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    margin:
+      0 auto 22px;
+
+    border-radius:
+      14px;
+
+    background:
+      #111827;
+
+    color:
+      white;
+
+    font-size:
+      24px;
+  }
+
+
+  .drop-zone h2 {
+
+    margin:
+      0;
+
+    font-size:
+      23px;
+
+    letter-spacing:
+      -0.025em;
+  }
+
+
+  .drop-zone > p {
+
+    color:
+      #6b7280;
+  }
+
+
+  .choose-button {
+
+    display:
+      inline-flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    margin-top:
+      8px;
+
+    padding:
+      12px 20px;
+
+    border:
+      1px solid #111827;
+
+    border-radius:
+      10px;
+
+    background:
+      #111827;
+
+    color:
+      white;
+
+    font-size:
+      14px;
+
+    font-weight:
+      600;
+
+    cursor:
+      pointer;
+
+    transition:
+      transform 0.15s,
+      opacity 0.15s;
+  }
+
+
+  .choose-button:hover {
+
+    transform:
+      translateY(-1px);
+
+    opacity:
+      0.9;
+  }
+
+
+  .paste-hint {
+
+    margin-top:
+      24px !important;
+
+    font-size:
+      13px !important;
+  }
+
+
+  kbd {
+
+    padding:
+      2px 6px;
+
+    border:
+      1px solid #d1d5db;
+
+    border-bottom-width:
+      2px;
+
+    border-radius:
+      5px;
+
+    background:
+      #f9fafb;
+
+    color:
+      #374151;
+
+    font-size:
+      11px;
+  }
+
+
+  .selected-card,
+  .progress-card,
+  .result-card,
+  .error-card {
+
+    margin-top:
+      20px;
+
+    padding:
+      22px;
+
+    border:
+      1px solid #e5e7eb;
+
+    border-radius:
+      16px;
+
+    background:
+      rgba(255,255,255,0.9);
+  }
+
+
+  .selected-card {
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      space-between;
+
+    gap:
+      20px;
+  }
+
+
+  .file-label {
+
+    margin-bottom:
+      5px;
+
+    font-size:
+      11px;
+
+    text-transform:
+      uppercase;
+
+    letter-spacing:
+      0.08em;
+
+    color:
+      #9ca3af;
+  }
+
+
+  .file-name {
+
+    font-weight:
+      650;
+
+    word-break:
+      break-word;
+  }
+
+
+  .file-size {
+
+    margin-top:
+      4px;
+
+    font-size:
+      13px;
+
+    color:
+      #9ca3af;
+  }
+
+
+  button {
+
+    font:
+      inherit;
+  }
+
+
+  .primary-button {
+
+    flex:
+      0 0 auto;
+
+    padding:
+      11px 17px;
+
+    border:
+      1px solid #111827;
+
+    border-radius:
+      9px;
+
+    background:
+      #111827;
+
+    color:
+      white;
+
+    font-size:
+      14px;
+
+    font-weight:
+      600;
+
+    cursor:
+      pointer;
+  }
+
+
+  .primary-button:hover {
+
+    opacity:
+      0.9;
+  }
+
+
+  .primary-button:disabled {
+
+    opacity:
+      0.45;
+
+    cursor:
+      not-allowed;
+  }
+
+
+  .progress-header {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    gap:
+      20px;
+
+    margin-bottom:
+      10px;
+
+    font-size:
+      14px;
+  }
+
+
+  #progressPercent {
+
+    color:
+      #6b7280;
+
+    font-variant-numeric:
+      tabular-nums;
+  }
+
+
+  .progress-track {
+
+    height:
+      8px;
+
+    overflow:
+      hidden;
+
+    border-radius:
+      999px;
+
+    background:
+      #e5e7eb;
+  }
+
+
+  .progress-bar {
+
+    width:
+      0%;
+
+    height:
+      100%;
+
+    border-radius:
+      inherit;
+
+    background:
+      #111827;
+
+    transition:
+      width 0.2s ease;
+  }
+
+
+  .page-status {
+
+    margin-top:
+      10px;
+
+    font-size:
+      12px;
+
+    color:
+      #9ca3af;
+  }
+
+
+  .result-card {
+
+    text-align:
+      center;
+  }
+
+
+  .success-icon {
+
+    width:
+      44px;
+
+    height:
+      44px;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    margin:
+      0 auto 14px;
+
+    border-radius:
+      50%;
+
+    background:
+      #111827;
+
+    color:
+      white;
+
+    font-size:
+      20px;
+
+    font-weight:
+      700;
+  }
+
+
+  .result-card h2 {
+
+    margin:
+      0;
+
+    font-size:
+      23px;
+  }
+
+
+  .result-message {
+
+    color:
+      #6b7280;
+  }
+
+
+  .statistics {
+
+    display:
+      grid;
+
+    grid-template-columns:
+      repeat(5, 1fr);
+
+    gap:
+      10px;
+
+    margin:
+      25px 0;
+  }
+
+
+  .stat {
+
+    padding:
+      15px 8px;
+
+    border:
+      1px solid #e5e7eb;
+
+    border-radius:
+      10px;
+
+    background:
+      #fafafa;
+  }
+
+
+  .stat strong {
+
+    display:
+      block;
+
+    font-size:
+      20px;
+  }
+
+
+  .stat span {
+
+    display:
+      block;
+
+    margin-top:
+      4px;
+
+    font-size:
+      11px;
+
+    color:
+      #9ca3af;
+  }
+
+
+  .download-button {
+
+    min-width:
+      170px;
+  }
+
+
+  .firebase-status {
+
+    min-height:
+      18px;
+
+    margin:
+      14px 0 0;
+
+    font-size:
+      12px;
+
+    color:
+      #9ca3af;
+  }
+
+
+  .error-card {
+
+    border-color:
+      #fecaca;
+
+    background:
+      #fffafa;
+  }
+
+
+  .error-card strong {
+
+    color:
+      #991b1b;
+  }
+
+
+  .error-card p {
+
+    margin-bottom:
+      0;
+
+    color:
+      #7f1d1d;
+
+    font-size:
+      13px;
+
+    word-break:
+      break-word;
+  }
+
+
+  footer {
+
+    display:
+      flex;
+
+    justify-content:
+      space-between;
+
+    gap:
+      20px;
+
+    margin-top:
+      35px;
+
+    color:
+      #9ca3af;
+
+    font-size:
+      12px;
+  }
+
+
+  @media (
+    max-width: 650px
+  ) {
+
+    .app {
+      padding-top:
+        28px;
+    }
+
+
+    .header {
+      margin-bottom:
+        55px;
+    }
+
+
+    .hero h1 {
+      font-size:
+        45px;
+    }
+
+
+    .drop-zone {
+      padding:
+        50px 20px;
+    }
+
+
+    .selected-card {
+      flex-direction:
+        column;
+
+      align-items:
+        stretch;
+    }
+
+
+    .primary-button {
+      width:
+        100%;
+    }
+
+
+    .statistics {
+      grid-template-columns:
+        repeat(2, 1fr);
+    }
+
+
+    footer {
+      flex-direction:
+        column;
+    }
+  }
+
+</style>
