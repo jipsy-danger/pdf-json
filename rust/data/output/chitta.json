@@ -1,0 +1,992 @@
+[
+  {
+    "text": "goed",
+    "confidence": 29.010498,
+    "reliable": false,
+    "bbox": {
+      "x": 24,
+      "y": 18,
+      "width": 47,
+      "height": 36
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "மகவை...",
+    "confidence": 0.0,
+    "reliable": false,
+    "bbox": {
+      "x": 80,
+      "y": 47,
+      "width": 110,
+      "height": 2
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "அமக",
+    "confidence": 12.654663,
+    "reliable": false,
+    "bbox": {
+      "x": 230,
+      "y": 18,
+      "width": 51,
+      "height": 36
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "OI",
+    "confidence": 30.215538,
+    "reliable": false,
+    "bbox": {
+      "x": 305,
+      "y": 22,
+      "width": 38,
+      "height": 17
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "பவா",
+    "confidence": 25.693748,
+    "reliable": false,
+    "bbox": {
+      "x": 364,
+      "y": 31,
+      "width": 30,
+      "height": 13
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "தழுக்கா",
+    "confidence": 17.322311,
+    "reliable": false,
+    "bbox": {
+      "x": 460,
+      "y": 30,
+      "width": 41,
+      "height": 12
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "29,",
+    "confidence": 83.29639,
+    "reliable": true,
+    "bbox": {
+      "x": 118,
+      "y": 50,
+      "width": 18,
+      "height": 12
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "சேந்தமங்தலழ்‌",
+    "confidence": 67.66162,
+    "reliable": true,
+    "bbox": {
+      "x": 143,
+      "y": 47,
+      "width": 78,
+      "height": 19
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "கிராமத்தில்‌",
+    "confidence": 93.30243,
+    "reliable": true,
+    "bbox": {
+      "x": 230,
+      "y": 41,
+      "width": 56,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "செட்டில்மெண்டு",
+    "confidence": 89.2228,
+    "reliable": true,
+    "bbox": {
+      "x": 290,
+      "y": 41,
+      "width": 73,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "mami",
+    "confidence": 11.040756,
+    "reliable": false,
+    "bbox": {
+      "x": 370,
+      "y": 41,
+      "width": 37,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "நபர்கள்‌",
+    "confidence": 81.24588,
+    "reliable": true,
+    "bbox": {
+      "x": 416,
+      "y": 41,
+      "width": 34,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "சிட்டா",
+    "confidence": 96.61648,
+    "reliable": true,
+    "bbox": {
+      "x": 456,
+      "y": 47,
+      "width": 28,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "Onin",
+    "confidence": 20.16784,
+    "reliable": false,
+    "bbox": {
+      "x": 74,
+      "y": 68,
+      "width": 40,
+      "height": 30
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 3
+  },
+  {
+    "text": "கடையம்‌",
+    "confidence": 25.396301,
+    "reliable": false,
+    "bbox": {
+      "x": 215,
+      "y": 79,
+      "width": 55,
+      "height": 12
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 3
+  },
+  {
+    "text": "ட",
+    "confidence": 50.952305,
+    "reliable": false,
+    "bbox": {
+      "x": 287,
+      "y": 89,
+      "width": 16,
+      "height": 6
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 3
+  },
+  {
+    "text": "-",
+    "confidence": 68.007355,
+    "reliable": true,
+    "bbox": {
+      "x": 21,
+      "y": 102,
+      "width": 3,
+      "height": 2
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 4
+  },
+  {
+    "text": "aes",
+    "confidence": 27.611458,
+    "reliable": false,
+    "bbox": {
+      "x": 100,
+      "y": 85,
+      "width": 37,
+      "height": 35
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 4
+  },
+  {
+    "text": "=",
+    "confidence": 83.93675,
+    "reliable": true,
+    "bbox": {
+      "x": 200,
+      "y": 106,
+      "width": 24,
+      "height": 2
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 4
+  },
+  {
+    "text": "்‌",
+    "confidence": 66.907166,
+    "reliable": true,
+    "bbox": {
+      "x": 313,
+      "y": 104,
+      "width": 2,
+      "height": 2
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 4
+  },
+  {
+    "text": "வருடம்‌",
+    "confidence": 6.827072,
+    "reliable": false,
+    "bbox": {
+      "x": 34,
+      "y": 117,
+      "width": 39,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "|",
+    "confidence": 87.180504,
+    "reliable": true,
+    "bbox": {
+      "x": 83,
+      "y": 103,
+      "width": 9,
+      "height": 32
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "opines",
+    "confidence": 30.670685,
+    "reliable": false,
+    "bbox": {
+      "x": 99,
+      "y": 115,
+      "width": 39,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "=",
+    "confidence": 62.013283,
+    "reliable": true,
+    "bbox": {
+      "x": 190,
+      "y": 109,
+      "width": 15,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "end",
+    "confidence": 44.63873,
+    "reliable": false,
+    "bbox": {
+      "x": 303,
+      "y": 101,
+      "width": 39,
+      "height": 34
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "moose",
+    "confidence": 22.142899,
+    "reliable": false,
+    "bbox": {
+      "x": 390,
+      "y": 112,
+      "width": 38,
+      "height": 10
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 5
+  },
+  {
+    "text": "ines",
+    "confidence": 26.397232,
+    "reliable": false,
+    "bbox": {
+      "x": 26,
+      "y": 130,
+      "width": 55,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "|",
+    "confidence": 87.491394,
+    "reliable": true,
+    "bbox": {
+      "x": 84,
+      "y": 113,
+      "width": 6,
+      "height": 34
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "cone",
+    "confidence": 31.603783,
+    "reliable": false,
+    "bbox": {
+      "x": 97,
+      "y": 129,
+      "width": 43,
+      "height": 10
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "[அஸ்தி",
+    "confidence": 3.385963,
+    "reliable": false,
+    "bbox": {
+      "x": 159,
+      "y": 129,
+      "width": 52,
+      "height": 12
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "|",
+    "confidence": 47.72612,
+    "reliable": false,
+    "bbox": {
+      "x": 217,
+      "y": 113,
+      "width": 4,
+      "height": 34
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "திகல",
+    "confidence": 49.639553,
+    "reliable": false,
+    "bbox": {
+      "x": 228,
+      "y": 129,
+      "width": 28,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "RARE]",
+    "confidence": 28.218117,
+    "reliable": false,
+    "bbox": {
+      "x": 272,
+      "y": 128,
+      "width": 52,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "தில]",
+    "confidence": 26.021225,
+    "reliable": false,
+    "bbox": {
+      "x": 340,
+      "y": 127,
+      "width": 29,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "பதிலை.",
+    "confidence": 49.237892,
+    "reliable": false,
+    "bbox": {
+      "x": 387,
+      "y": 126,
+      "width": 36,
+      "height": 11
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "|",
+    "confidence": 51.32517,
+    "reliable": false,
+    "bbox": {
+      "x": 438,
+      "y": 113,
+      "width": 12,
+      "height": 34
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "oe",
+    "confidence": 51.32517,
+    "reliable": false,
+    "bbox": {
+      "x": 465,
+      "y": 128,
+      "width": 19,
+      "height": 8
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 6
+  },
+  {
+    "text": "ய)",
+    "confidence": 49.14183,
+    "reliable": false,
+    "bbox": {
+      "x": 45,
+      "y": 146,
+      "width": 18,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "fe)",
+    "confidence": 34.762756,
+    "reliable": false,
+    "bbox": {
+      "x": 107,
+      "y": 145,
+      "width": 22,
+      "height": 10
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "3)",
+    "confidence": 74.471664,
+    "reliable": true,
+    "bbox": {
+      "x": 183,
+      "y": 145,
+      "width": 12,
+      "height": 10
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "Las)",
+    "confidence": 24.62844,
+    "reliable": false,
+    "bbox": {
+      "x": 232,
+      "y": 145,
+      "width": 25,
+      "height": 10
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "|",
+    "confidence": 73.98368,
+    "reliable": true,
+    "bbox": {
+      "x": 263,
+      "y": 131,
+      "width": 8,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "cs)",
+    "confidence": 50.369606,
+    "reliable": false,
+    "bbox": {
+      "x": 296,
+      "y": 143,
+      "width": 12,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "|",
+    "confidence": 35.5534,
+    "reliable": false,
+    "bbox": {
+      "x": 326,
+      "y": 131,
+      "width": 8,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "cor",
+    "confidence": 35.5534,
+    "reliable": false,
+    "bbox": {
+      "x": 345,
+      "y": 143,
+      "width": 20,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "|",
+    "confidence": 78.15411,
+    "reliable": true,
+    "bbox": {
+      "x": 377,
+      "y": 131,
+      "width": 8,
+      "height": 29
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "or",
+    "confidence": 47.4326,
+    "reliable": false,
+    "bbox": {
+      "x": 399,
+      "y": 142,
+      "width": 20,
+      "height": 9
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "a)",
+    "confidence": 7.269699,
+    "reliable": false,
+    "bbox": {
+      "x": 465,
+      "y": 140,
+      "width": 45,
+      "height": 13
+    },
+    "page": 1,
+    "block": 3,
+    "paragraph": 1,
+    "line": 7
+  },
+  {
+    "text": "பண்பி",
+    "confidence": 34.704483,
+    "reliable": false,
+    "bbox": {
+      "x": 92,
+      "y": 201,
+      "width": 43,
+      "height": 10
+    },
+    "page": 1,
+    "block": 6,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "fi",
+    "confidence": 56.896103,
+    "reliable": false,
+    "bbox": {
+      "x": 170,
+      "y": 133,
+      "width": 7,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "(",
+    "confidence": 78.90278,
+    "reliable": true,
+    "bbox": {
+      "x": 288,
+      "y": 143,
+      "width": 2,
+      "height": 9
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 1
+  },
+  {
+    "text": "வேக்‌]",
+    "confidence": 58.490864,
+    "reliable": false,
+    "bbox": {
+      "x": 151,
+      "y": 149,
+      "width": 38,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "oF",
+    "confidence": 59.111908,
+    "reliable": false,
+    "bbox": {
+      "x": 196,
+      "y": 149,
+      "width": 11,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "]",
+    "confidence": 89.87772,
+    "reliable": true,
+    "bbox": {
+      "x": 216,
+      "y": 149,
+      "width": 5,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "ரூ.",
+    "confidence": 90.94273,
+    "reliable": true,
+    "bbox": {
+      "x": 225,
+      "y": 149,
+      "width": 15,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "[பவெக்‌]",
+    "confidence": 0.0,
+    "reliable": false,
+    "bbox": {
+      "x": 246,
+      "y": 149,
+      "width": 55,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "ஸீ",
+    "confidence": 57.84914,
+    "reliable": false,
+    "bbox": {
+      "x": 307,
+      "y": 149,
+      "width": 13,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "|",
+    "confidence": 51.824417,
+    "reliable": false,
+    "bbox": {
+      "x": 328,
+      "y": 149,
+      "width": 8,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "சூ.",
+    "confidence": 51.824417,
+    "reliable": false,
+    "bbox": {
+      "x": 340,
+      "y": 149,
+      "width": 14,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "[வ]",
+    "confidence": 9.572189,
+    "reliable": false,
+    "bbox": {
+      "x": 358,
+      "y": 149,
+      "width": 24,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "ரூ.",
+    "confidence": 91.25551,
+    "reliable": true,
+    "bbox": {
+      "x": 388,
+      "y": 149,
+      "width": 20,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "[மை",
+    "confidence": 50.53604,
+    "reliable": false,
+    "bbox": {
+      "x": 414,
+      "y": 149,
+      "width": 27,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 2
+  },
+  {
+    "text": "ai",
+    "confidence": 36.243874,
+    "reliable": false,
+    "bbox": {
+      "x": 160,
+      "y": 161,
+      "width": 20,
+      "height": 28
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 3
+  },
+  {
+    "text": "aa",
+    "confidence": 34.723923,
+    "reliable": false,
+    "bbox": {
+      "x": 273,
+      "y": 170,
+      "width": 17,
+      "height": 8
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 1,
+    "line": 3
+  },
+  {
+    "text": "2",
+    "confidence": 16.853867,
+    "reliable": false,
+    "bbox": {
+      "x": 162,
+      "y": 200,
+      "width": 6,
+      "height": 9
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 2,
+    "line": 1
+  },
+  {
+    "text": "௨",
+    "confidence": 71.343216,
+    "reliable": true,
+    "bbox": {
+      "x": 162,
+      "y": 222,
+      "width": 8,
+      "height": 8
+    },
+    "page": 1,
+    "block": 12,
+    "paragraph": 3,
+    "line": 1
+  }
+]
