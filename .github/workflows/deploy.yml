@@ -29,17 +29,15 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Install dependencies
-        working-directory: pdf-json-main
         run: npm ci
 
       - name: Build with Astro
-        working-directory: pdf-json-main
         run: npx astro build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: pdf-json-main/dist
+          path: dist
 
   deploy:
     environment:
